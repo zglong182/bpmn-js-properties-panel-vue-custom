@@ -15,6 +15,7 @@ import 'ant-design-vue/lib/icon/style/css'
 import 'ant-design-vue/lib/modal/style/css'
 import 'ant-design-vue/lib/row/style/css'
 import 'ant-design-vue/lib/col/style/css'
+import 'ant-design-vue/lib/input/style/css'
 
 import Button from 'ant-design-vue'
 import Carousel from 'ant-design-vue'
@@ -26,6 +27,7 @@ import Icon from 'ant-design-vue'
 import Modal from 'ant-design-vue'
 import Row from 'ant-design-vue'
 import Col from 'ant-design-vue'
+import Input from 'ant-design-vue'
 
 Vue.use(Button)
 Vue.use(Carousel)
@@ -37,6 +39,7 @@ Vue.use(Icon)
 Vue.use(Modal)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(Input)
 
 Vue.config.productionTip = false
 new Vue({
