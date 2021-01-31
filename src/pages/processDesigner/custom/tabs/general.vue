@@ -6,7 +6,6 @@
       </template>
       <!-- 常规信息-->
       <a-collapse-panel header="常规信息">
-
         <label v-if="elementType === 'bpmn:StartEvent'">开始</label>
         <label v-else-if="elementType === 'bpmn:Process'">流程</label>
         <label v-else-if="elementType === 'bpmn:SequenceFlow'">连线</label>
@@ -185,7 +184,7 @@
         v-if="elementType === 'bpmn:Process'"
         header="启动配置"
       >
-        候选组：
+        启动候选组：
         <a-input
           v-model="activeElementBusiness.candidateStarterGroups"
           :size="this.size"
@@ -193,7 +192,7 @@
           @change="updateBaseInfo('candidateStarterGroups', activeElementBusiness.candidateStarterGroups)"
         />
         <br><br>
-        候选人：
+        启动候选人：
         <a-input
           v-model="activeElementBusiness.candidateStarterUsers"
           :size="this.size"
@@ -264,6 +263,7 @@ export default {
   },
   watch: {
     elementId(newVal, oldVar) {
+      console.log('general的elementId发生了变化')
       this.elementRegistry = this.generalModeler.get('elementRegistry')
       this.modeling = this.generalModeler.get('modeling')
       this.bpmnFactory = this.generalModeler.get('bpmnFactory')
