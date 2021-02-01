@@ -1,10 +1,7 @@
 <template>
   <div class="listeners">
-    <a-card>
-      <template slot="title">执行监听 <a-icon type="question-circle" /></template>
-      <a-button slot="extra" title="创建监听" type="primary" shape="circle" @click="openListenerDrawer">
-        <a-icon type="plus" @click="openListenerDrawer" />
-      </a-button>
+    <a-card size="small" title="执行监听">
+      <a slot="extra" type="plus" href="#" @click="openListenerDrawer"><a-icon type="plus-circle" /></a>
       <a-empty
         v-if="ownerListenersList.length === 0"
         image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
@@ -40,11 +37,102 @@
     </a-card>
     <br>
     <a-card size="small" title="任务监听">
-      <a slot="extra" href="#">more</a>
-      <p>card content</p>
-      <p>card content</p>
-      <p>card content</p>
+      <a slot="extra" type="plus" href="#" @click="openListenerDrawer"><a-icon type="plus-circle" /></a>
     </a-card>
+    <a-card size="small" title="字段注入">
+      <a slot="extra" type="plus" href="#" @click="openListenerDrawer"><a-icon type="plus-circle" /></a>
+    </a-card>
+
+    <a-drawer
+      title="创建执行监听"
+      width="40%"
+      placement="right"
+      :keyboard="false"
+      :mask-closable="false"
+      :visible="visible"
+      :after-visible-change="afterVisibleChange"
+      @close="closeListenerDrawer"
+    >
+      <a-form :form="listenerForm" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+        <a-form-item label="事件类型" required>
+          <a-select
+            v-decorator="[
+              listenerForm.event,
+              { rules: [{ required: true, message: '事件类型不能为空' }] },
+            ]"
+            default-value="start"
+            placeholder="请选择事件类型"
+          >
+            <a-select-option value="start">start</a-select-option>
+            <a-select-option value="end">end</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="监听器类型" required>
+          <a-select
+            v-decorator="[
+              listenerForm.listenerType,
+              { rules: [{ required: true, message: '监听器类型不能为空' }] },
+            ]"
+            placeholder="请选择监听器类型"
+            @change="handleSelectChange"
+          >
+            <a-select-option value="Java类">Java类</a-select-option>
+            <a-select-option value="表达式">表达式</a-select-option>
+            <a-select-option value="代理表达式">代理表达式</a-select-option>
+            <a-select-option value="脚本">脚本</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item>
+          <template slot="label">
+            <label>{{ listenerTypeTitle }}</label>
+          </template>
+          <a-input
+            v-if="listenerTypeTitle === 'Java类'"
+            v-decorator="[listenerForm.class, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            allow-clear
+          />
+          <a-input
+            v-else-if="listenerTypeTitle === '表达式'"
+            v-decorator="[listenerForm.expression, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            allow-clear
+          />
+          <a-input
+            v-else-if="listenerTypeTitle === '代理表达式'"
+            v-decorator="[listenerForm.delegateExpression, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            allow-clear
+          />
+          <a-input
+            v-else-if="listenerTypeTitle === '脚本'"
+            v-decorator="[listenerForm.script.scriptFormat, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            allow-clear
+          />
+        </a-form-item>
+      </a-form>
+      <div
+        :style="{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          borderTop: '1px solid #e8e8e8',
+          padding: '10px 16px',
+          textAlign: 'right',
+          left: 0,
+          background: '#fff',
+          borderRadius: '0 0 4px 4px',
+        }"
+      >
+        <a-popconfirm
+          title="当前监听未保存,确认关闭?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="closeListenerDrawer"
+          @cancel="closeListenerDrawer"
+        >
+          <a-button style="marginRight: 8px">关闭</a-button>
+        </a-popconfirm>
+        <a-button type="primary" @click="handleSubmit">保存</a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
@@ -64,9 +152,12 @@ export default {
     return {
       noData: { emptyText: '暂无监听' },
       elementType: '',
+      listenerTypeTitle: 'Java类',
       size: 'small',
       ownerListenersList: [],
-      ownerListenersObjectList: []
+      ownerListenersObjectList: [],
+      visible: false,
+      listenerForm: this.$form.createForm(this, { name: 'coordinated' })
     }
   },
   watch: {
@@ -117,6 +208,30 @@ export default {
     }
   },
   methods: {
+    handleSubmit(e) {
+      console.log(1111)
+      debugger
+      e.preventDefault()
+      this.listenerForm.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+        }
+      })
+    },
+    handleSelectChange(value) {
+      if (value === 'Java类') {
+        this.listenerTypeTitle = 'Java类'
+      } else if (value === '表达式') {
+        this.listenerTypeTitle = '表达式'
+      } else if (value === '代理表达式') {
+        this.listenerTypeTitle = '代理表达式'
+      } else {
+        this.listenerTypeTitle = '脚本'
+      }
+    },
+    afterVisibleChange(val) {
+      console.log('visible', val)
+    },
     /* 删除监听*/
     removeListener(listener, index) {
       debugger
@@ -126,7 +241,11 @@ export default {
     },
     /* 打开监听创建抽屉*/
     openListenerDrawer() {
-      this.$message.success('打开抽屉')
+      this.visible = true
+    },
+    /* 关闭监听创建抽屉*/
+    closeListenerDrawer() {
+      this.visible = false
     }
   }
 }

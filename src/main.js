@@ -20,6 +20,9 @@ import 'ant-design-vue/lib/drawer/style/css'
 import 'ant-design-vue/lib/card/style/css'
 import 'ant-design-vue/lib/list/style/css'
 import 'ant-design-vue/lib/message/style/css'
+import 'ant-design-vue/lib/popconfirm/style/css'
+import 'ant-design-vue/lib/form/style/css'
+import 'ant-design-vue/lib/select/style/css'
 
 import Button from 'ant-design-vue'
 import Carousel from 'ant-design-vue'
@@ -36,6 +39,9 @@ import Drawer from 'ant-design-vue'
 import Card from 'ant-design-vue'
 import List from 'ant-design-vue'
 import Message from 'ant-design-vue'
+import Popconfirm from 'ant-design-vue'
+import Form from 'ant-design-vue'
+import Select from 'ant-design-vue'
 
 Vue.use(Button)
 Vue.use(Carousel)
@@ -52,6 +58,9 @@ Vue.use(Drawer)
 Vue.use(Card)
 Vue.use(List)
 Vue.use(Message)
+Vue.use(Popconfirm)
+Vue.use(Form)
+Vue.use(Select)
 
 Vue.config.productionTip = false
 new Vue({
