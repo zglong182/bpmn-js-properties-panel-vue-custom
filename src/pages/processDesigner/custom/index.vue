@@ -23,6 +23,13 @@
                 @change="updateElementListener"
               />
             </a-tab-pane>
+            <a-tab-pane key="4" tab="扩展">
+              <Expand
+                :expand-modeler="modeler"
+                :element-id="elementId"
+                :element-attributes="elementAttributes"
+                @change="updateElementAttributes"
+              /></a-tab-pane>
           </a-tabs>
         </a-tab-pane>
         <a-tab-pane id="properties" key="2" tab="原生面板" />
@@ -43,6 +50,7 @@ import Toolbar from './toolbar'
 import General from './tabs/general'
 import Forms from './tabs/forms'
 import Listeners from './tabs/listeners'
+import Expand from './tabs/expand'
 
 export default {
   name: 'Index',
@@ -50,7 +58,8 @@ export default {
     Toolbar,
     General,
     Forms,
-    Listeners
+    Listeners,
+    Expand
   },
   data() {
     return {
@@ -84,6 +93,9 @@ export default {
     },
     elementListeners(listeners) {
       console.log('elementListeners: ', listeners, 'listeners发生了变化')
+    },
+    elementAttributes(Attributes) {
+      console.log('elementAttributes: ', Attributes, 'Attributes发生了变化')
     }
   },
   mounted() {
@@ -129,7 +141,6 @@ export default {
     },
     // 更新事件监听器
     updateElementListener(listeners) {
-      debugger
       const element = this.elementRegistry.get(this.elementId)
       const extensionElements = element.businessObject.get('extensionElements')
       // 截取不是监听器的属性
@@ -141,6 +152,25 @@ export default {
       const extensions = this.moddle.create('bpmn:ExtensionElements', {
         values: otherExtensions.concat(listeners)
       })
+      this.updateElementExtensions(element, extensions)
+    },
+    // 更新扩展属性
+    updateElementAttributes(attributes) {
+      debugger
+      // attributes 是普通数组，需要重新创建实例
+      const properties = this.moddle.create(`${this.prefix}:Properties`, {
+        values: attributes.map(attr => {
+          return this.moddle.create(`${this.prefix}:Property`, { name: attr.name, value: attr.value })
+        })
+      })
+      const element = this.elementRegistry.get(this.elementId)
+      const extensionElements = element.businessObject.get('extensionElements')
+      // 截取不是扩展属性的属性
+      const otherExtensions = extensionElements && extensionElements.get('values') && extensionElements.get('values').filter(ex => ex.$type !== `${this.prefix}:Properties`) || []
+      // const otherExtensions = extensionElements?.get("values")?.filter(ex => ex.$type !== `${this.prefix}:Properties`) || [];
+
+      // 重建扩展属性
+      const extensions = this.moddle.create('bpmn:ExtensionElements', { values: otherExtensions.concat([properties]) })
       this.updateElementExtensions(element, extensions)
     },
     // 更新属性到元素

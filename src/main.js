@@ -23,6 +23,8 @@ import 'ant-design-vue/lib/message/style/css'
 import 'ant-design-vue/lib/popconfirm/style/css'
 import 'ant-design-vue/lib/form/style/css'
 import 'ant-design-vue/lib/select/style/css'
+import 'ant-design-vue/lib/table/style/css'
+import 'ant-design-vue/lib/form-model/style/css'
 
 import Button from 'ant-design-vue'
 import Carousel from 'ant-design-vue'
@@ -42,6 +44,8 @@ import Message from 'ant-design-vue'
 import Popconfirm from 'ant-design-vue'
 import Form from 'ant-design-vue'
 import Select from 'ant-design-vue'
+import Table from 'ant-design-vue'
+import FormModel from 'ant-design-vue'
 
 Vue.use(Button)
 Vue.use(Carousel)
@@ -61,6 +65,8 @@ Vue.use(Message)
 Vue.use(Popconfirm)
 Vue.use(Form)
 Vue.use(Select)
+Vue.use(Table)
+Vue.use(FormModel)
 
 Vue.config.productionTip = false
 new Vue({

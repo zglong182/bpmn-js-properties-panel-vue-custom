@@ -2,7 +2,7 @@
   <div class="general">
     <a-collapse v-model="activeKey" @change="changeActivekey">
       <template #expandIcon="props">
-        <a-icon type="minus" :rotate="props.isActive ? 90 : 0" />
+        <a-icon type="minus" style="color: #40a9ff" :rotate="props.isActive ? 90 : 0" />
       </template>
       <!-- 常规信息-->
       <a-collapse-panel header="常规信息">
