@@ -1,7 +1,7 @@
 <template>
   <div class="listeners">
     <a-card size="small" title="执行监听">
-      <a slot="extra" type="plus" href="#" @click="openListenerDrawer"><a-icon type="plus-circle" /></a>
+      <a slot="extra" type="plus" href="#" @click="openListenerDrawer('创建','','')"><a-icon type="plus-circle" /></a>
       <a-empty
         v-if="ownerListenersList.length === 0"
         image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
@@ -10,7 +10,7 @@
         }"
       >
         <span slot="description">当前监听为空</span>
-        <a-button type="primary" @click="openListenerDrawer">
+        <a-button type="primary" @click="openListenerDrawer('创建','','')">
           点击创建
         </a-button>
       </a-empty>
@@ -22,8 +22,16 @@
         :data-source="ownerListenersList"
       >
         <a-list-item slot="renderItem" slot-scope="item,index">
-          <a slot="actions">编辑</a>
-          <a slot="actions" @click="removeListener(item,index)">删除</a>
+          <a slot="actions" @click="openListenerDrawer('编辑',item,index)">编辑</a>
+          <a slot="actions"> <a-popconfirm
+            title="确认删除?"
+            ok-text="Yes"
+            cancel-text="No"
+            @confirm="deleteListener(item,index)"
+          >
+            删除
+          </a-popconfirm>
+          </a>
           <a-list-item-meta :title="item.event" class="ant-list-item-meta">
             <template slot="description">
               <label v-if="item.class">Java类<br>{{ item.class }}</label>
@@ -44,8 +52,8 @@
     </a-card>
 
     <a-drawer
-      title="创建执行监听"
-      width="40%"
+      :title="listenerTitle"
+      width="30%"
       placement="right"
       :keyboard="false"
       :mask-closable="false"
@@ -53,61 +61,56 @@
       :after-visible-change="afterVisibleChange"
       @close="closeListenerDrawer"
     >
-      <a-form :form="listenerForm" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
-        <a-form-item label="事件类型" required>
+      <a-form-model
+        ref="listenerForm"
+        :model="listenerForm"
+        :rules="rules"
+      >
+        <a-form-model-item label="事件类型" prop="event">
           <a-select
-            v-decorator="[
-              listenerForm.event,
-              { rules: [{ required: true, message: '事件类型不能为空' }] },
-            ]"
-            default-value="start"
+            v-model="listenerForm.event"
             placeholder="请选择事件类型"
           >
             <a-select-option value="start">start</a-select-option>
             <a-select-option value="end">end</a-select-option>
           </a-select>
-        </a-form-item>
-        <a-form-item label="监听器类型" required>
+        </a-form-model-item>
+        <a-form-model-item label="监听器类型" prop="listenerType">
           <a-select
-            v-decorator="[
-              listenerForm.listenerType,
-              { rules: [{ required: true, message: '监听器类型不能为空' }] },
-            ]"
+            v-model="listenerForm.listenerType"
             placeholder="请选择监听器类型"
             @change="handleSelectChange"
           >
-            <a-select-option value="Java类">Java类</a-select-option>
-            <a-select-option value="表达式">表达式</a-select-option>
-            <a-select-option value="代理表达式">代理表达式</a-select-option>
-            <a-select-option value="脚本">脚本</a-select-option>
+            <a-select-option value="class">Java类</a-select-option>
+            <a-select-option value="expression">表达式</a-select-option>
+            <a-select-option value="delegateExpression">代理表达式</a-select-option>
+            <!--<a-select-option value="脚本">脚本</a-select-option>-->
           </a-select>
-        </a-form-item>
-        <a-form-item>
-          <template slot="label">
-            <label>{{ listenerTypeTitle }}</label>
-          </template>
+        </a-form-model-item>
+        <a-form-model-item v-if="listenerTypeTitle === 'Java类'" label="Java类" prop="class">
           <a-input
-            v-if="listenerTypeTitle === 'Java类'"
-            v-decorator="[listenerForm.class, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            v-model="listenerForm.class"
             allow-clear
           />
+        </a-form-model-item>
+        <a-form-model-item v-else-if="listenerTypeTitle === '表达式'" label="表达式" prop="expression">
           <a-input
-            v-else-if="listenerTypeTitle === '表达式'"
-            v-decorator="[listenerForm.expression, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            v-model="listenerForm.expression"
             allow-clear
           />
+        </a-form-model-item>
+        <a-form-model-item v-else-if="listenerTypeTitle === '代理表达式'" label="代理表达式" prop="delegateExpression">
           <a-input
-            v-else-if="listenerTypeTitle === '代理表达式'"
-            v-decorator="[listenerForm.delegateExpression, { rules: [{ required: true, message: 'Please input your note!' }] }]"
+            v-model="listenerForm.delegateExpression"
             allow-clear
           />
+        </a-form-model-item>
+        <a-form-model-item v-else-if="listenerTypeTitle === '脚本'" label="脚本">
           <a-input
-            v-else-if="listenerTypeTitle === '脚本'"
-            v-decorator="[listenerForm.script.scriptFormat, { rules: [{ required: true, message: 'Please input your note!' }] }]"
             allow-clear
           />
-        </a-form-item>
-      </a-form>
+        </a-form-model-item>
+      </a-form-model>
       <div
         :style="{
           position: 'absolute',
@@ -130,7 +133,7 @@
         >
           <a-button style="marginRight: 8px">关闭</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="handleSubmit">保存</a-button>
+        <a-button type="primary" @click="saveListener">保存</a-button>
       </div>
     </a-drawer>
   </div>
@@ -150,14 +153,24 @@ export default {
   },
   data() {
     return {
+      prefix: 'camunda',
       noData: { emptyText: '暂无监听' },
       elementType: '',
       listenerTypeTitle: 'Java类',
+      listenerTitle: '',
+      listenerIndex: -1,
       size: 'small',
       ownerListenersList: [],
       ownerListenersObjectList: [],
       visible: false,
-      listenerForm: this.$form.createForm(this, { name: 'coordinated' })
+      listenerForm: {},
+      rules: {
+        event: [{ required: true, message: '事件类型不能为空', trigger: 'blur' }],
+        listenerType: [{ required: true, message: '监听器类型不能为空', trigger: 'blur' }],
+        class: [{ required: true, message: 'Java不能为空不能为空' }],
+        expression: [{ required: true, message: '表达式不能为空不能为空' }],
+        delegateExpression: [{ required: true, message: '代理表达式不能为空不能为空' }]
+      }
     }
   },
   watch: {
@@ -208,22 +221,36 @@ export default {
     }
   },
   methods: {
-    handleSubmit(e) {
-      console.log(1111)
-      debugger
-      e.preventDefault()
-      this.listenerForm.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values)
+    saveListener() {
+      this.$refs.listenerForm.validate((valid) => {
+        if (valid) {
+          // 组装数据
+          const listenerObj = this.initListenerObject(this.listenerForm)
+          this.moddle = this.listenersModeler.get('moddle')
+          const listenerModel = this.moddle.create(`${this.prefix}:ExecutionListener`, listenerObj)
+          console.log(listenerModel)
+          // 插入
+          if (this.listenerIndex === -1) {
+            this.ownerListenersObjectList.push(listenerModel)
+            this.ownerListenersList.push(this.listenerForm)
+          } else {
+            this.ownerListenersObjectList.splice(this.listenerIndex, 1, listenerModel)
+            this.ownerListenersList.push(this.listenerIndex, 1, this.listenerForm)
+          }
+          // 更新
+          this.$emit('saved', this.listenerForm)
+          this.$emit('change', this.ownerListenersObjectList)
+          this.$message.success('新增成功')
+          this.closeListenerDrawer()
         }
       })
     },
     handleSelectChange(value) {
-      if (value === 'Java类') {
+      if (value === 'class') {
         this.listenerTypeTitle = 'Java类'
-      } else if (value === '表达式') {
+      } else if (value === 'expression') {
         this.listenerTypeTitle = '表达式'
-      } else if (value === '代理表达式') {
+      } else if (value === 'delegateExpression') {
         this.listenerTypeTitle = '代理表达式'
       } else {
         this.listenerTypeTitle = '脚本'
@@ -233,19 +260,48 @@ export default {
       console.log('visible', val)
     },
     /* 删除监听*/
-    removeListener(listener, index) {
-      debugger
+    deleteListener(listener, index) {
       const removedListener = this.ownerListenersList.splice(index, 1)
       this.$emit('remove-listener', removedListener)
       this.$emit('change', this.ownerListenersList)
     },
     /* 打开监听创建抽屉*/
-    openListenerDrawer() {
+    openListenerDrawer(type, data, index) {
+      debugger
+      console.log(data, index)
+      if (type === '创建') {
+        this.listenerTitle = '创建执行监听'
+      } else {
+        this.listenerTitle = '编辑执行监听'
+        this.listenerForm = data
+        this.listenerIndex = index
+      }
       this.visible = true
     },
     /* 关闭监听创建抽屉*/
     closeListenerDrawer() {
       this.visible = false
+      this.$refs.listenerForm.resetFields()
+    },
+    initListenerObject(options) {
+      const listenerObj = {}
+      listenerObj.event = options.event
+      switch (options.listenerType) {
+        case 'expression':
+          listenerObj.expression = options.expression
+          break
+        case 'delegateExpression':
+          listenerObj.delegateExpression = options.delegateExpression
+          break
+        default:
+          listenerObj.class = options.class
+      }
+      if (options.fields) {
+        listenerObj.fields = options.fields.map(field => {
+          return this.moddle.create(`${this.prefix}:Field`, field)
+        })
+      }
+      return listenerObj
     }
   }
 }

@@ -3,7 +3,7 @@ import Route from 'vue-router'
 
 export const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: () => import('./pages/home')
   },
@@ -23,7 +23,7 @@ export const routes = [
     component: () => import('./pages/processDesigner/panel')
   },
   {
-    path: '/custom',
+    path: '/',
     name: 'custom',
     component: () => import('./pages/processDesigner/custom/index')
   },

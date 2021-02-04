@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card size="small" title="扩展属性">
-      <a slot="extra" type="plus" href="#" @click="showModal('创建','','')"><a-icon type="plus-circle" /></a>
+      <a slot="extra" type="plus" href="#" @click="showModal('创建')"><a-icon type="plus-circle" /></a>
       <a-table :data-source="ownerAttributes" :pagination="false" size="small">
         <a-table-column key="id" title="类型" data-index="id" width="20%" />
         <a-table-column key="name" title="名称" data-index="name" width="20%" />
@@ -14,7 +14,7 @@
               title="确认删除?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="deleteListener(text)"
+              @confirm="deleteListener(text,index)"
             >
               <a type="link"> 删除</a>
             </a-popconfirm>
@@ -85,9 +85,9 @@ export default {
   },
   watch: {
     elementAttributes(newVal, oldVar) {
+      console.log('Expand的elementAttributes发生了变化')
       if (newVal) {
         this.ownerAttributes = JSON.parse(JSON.stringify(this.elementAttributes[0] && this.elementAttributes[0].values || []))
-        console.log(this.ownerAttributes)
         // this.ownerAttributes = JSON.parse(JSON.stringify(this.elementAttributes[0]?.values || []))
       }
     },
@@ -96,14 +96,6 @@ export default {
     }
   },
   methods: {
-    deleteListener(text) {
-      this.$message.info(text.name)
-    },
-    closeAndReset() {
-      debugger
-      this.visible = false
-      this.$refs.form.resetFields()
-    },
     showModal(type, data, index) {
       if (type === '创建') {
         this.attributeTitle = '创建扩展属性'
@@ -120,16 +112,29 @@ export default {
           console.log(this.attributeIndex === -1)
           if (this.attributeIndex === -1) {
             this.ownerAttributes.push(this.form)
+            this.$message.success('新增成功')
           } else {
-            this.$message.info('index')
+            this.ownerAttributes.splice(this.attributeIndex, 1, this.form)
+            this.attributeIndex = -1
+            this.$message.success('保存成功')
           }
           this.$emit('saved', this.attributeForm)
           this.$emit('change', this.ownerAttributes)
-          this.visible = false
-          this.attributeIndex = -1
-          this.$refs.form.resetFields()
+          this.closeAndReset()
         }
       })
+    },
+    deleteListener(text, index) {
+      this.ownerAttributes.splice(index, 1)
+      this.$emit('saved', this.attributeForm)
+      this.$emit('change', this.ownerAttributes)
+      this.$message.success('删除成功')
+    },
+    closeAndReset() {
+      this.visible = false
+      this.$refs.form.resetFields()
+      this.form = {}
+      this.ownerAttributes = JSON.parse(JSON.stringify(this.elementAttributes[0] && this.elementAttributes[0].values || []))
     }
   }
 }

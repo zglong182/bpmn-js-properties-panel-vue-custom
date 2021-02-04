@@ -30,7 +30,6 @@
         <a-input
           v-model="activeElementBusiness.name"
           :size="this.size"
-
           @change="updateBaseInfo('name', activeElementBusiness.name)"
         />
         <label v-if="elementType === 'bpmn:Process'">
@@ -39,7 +38,6 @@
           <a-input
             v-model="activeElementBusiness.versionTag"
             :size="this.size"
-
             @change="updateBaseInfo('versionTag', activeElementBusiness.versionTag)"
           />
           <br><br>
@@ -47,7 +45,6 @@
           <a-input
             v-model="activeElementBusiness.type"
             :size="this.size"
-
             @change="updateBaseInfo('type', activeElementBusiness.type)"
           />
           <br><br>

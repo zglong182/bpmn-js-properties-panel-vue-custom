@@ -74,9 +74,9 @@
 </template>
 
 <script>
-// import 'highlight.js/styles/gradient-light.css'
+import 'highlight.js/styles/gradient-light.css'
 // import 'highlight.js/styles/dracula.css'
-import 'highlight.js/styles/an-old-hope.css'
+// import 'highlight.js/styles/an-old-hope.css'
 
 export default {
   name: 'Toolbar',
@@ -152,7 +152,6 @@ export default {
     },
     /* 根据所需类型进行转码并返回下载地址*/
     setEncoded(type, data) {
-      debugger
       const encodedData = encodeURIComponent(data)
       const businessObject = this.toolbarModeler.get('elementRegistry').find(el => el.type === 'bpmn:Process').businessObject
       console.log()
