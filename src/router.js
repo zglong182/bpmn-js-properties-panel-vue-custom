@@ -2,11 +2,11 @@ import Vue from 'vue'
 import Route from 'vue-router'
 
 export const routes = [
-  {
-    path: '/home',
-    name: 'home',
-    component: () => import('./pages/home')
-  },
+  // {
+  //   path: '/',
+  //   name: 'home',
+  //   component: () => import('./pages/home')
+  // },
   {
     path: '/viewer',
     name: 'viewer',

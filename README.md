@@ -1,24 +1,20 @@
 # bpmn-js-properties-panel-vue-custom
 
-## Project setup
+bpmn-js属性面板重写,Vue+Ant Design Vue
+
+演示站: [http://bpmn.zglong.cn](http://bpmn.zglong.cn)
+
+## 初始化
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发环境启动
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 生产环境打包
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

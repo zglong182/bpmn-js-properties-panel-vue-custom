@@ -5,7 +5,7 @@
       <div id="canvas" ref="canvas" class="canvas" />
       <a-tabs type="card" class="properties" size="large">
         <a-button slot="tabBarExtraContent">
-          Extra Action
+          配置
         </a-button>
         <a-tab-pane key="1" tab="自定义面板">
           <a-tabs size="small">

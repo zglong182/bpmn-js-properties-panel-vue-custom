@@ -1,5 +1,11 @@
 <template>
   <div id="app">
+<!--    <router-link to="/">Home</router-link> |-->
+<!--    <router-link to="/viewer">viewer</router-link> |-->
+<!--    <router-link to="/modeler">modeler</router-link> |-->
+<!--    <router-link to="/panel">panel</router-link> |-->
+<!--    <router-link to="/custom">custom</router-link> |-->
+<!--    <router-link to="/example">example</router-link>-->
     <router-view />
   </div>
 </template>

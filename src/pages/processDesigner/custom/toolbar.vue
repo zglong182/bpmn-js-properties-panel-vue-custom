@@ -5,7 +5,7 @@
       <a-col :span="23">
         <a-space :size="40">
           <a-button-group>
-            <a-button size="small" type="primary" @click="processZoomIn">
+            <a-button size="small" type="primary" @click="importModal">
               <a-icon type="left" /><a-icon type="upload" />导入
             </a-button>
             <a-dropdown>
@@ -36,19 +36,19 @@
             </a-button>
           </a-button-group>
           <a-button-group>
-            <a-button size="small" type="primary" @click="processZoomIn">
+            <a-button size="small" type="primary" @click="importModal">
               <a-icon type="left" /> <a-icon type="save" />暂存
             </a-button>
-            <a-button size="small" type="primary" @click="processReZoom">
+            <a-button size="small" type="primary" @click="importModal">
               <a-icon type="deployment-unit" />部署
             </a-button>
-            <a-button size="small" type="primary" @click="processZoomOut">
+            <a-button size="small" type="primary" @click="importModal">
               <a-icon type="sync" />同步
             </a-button>
-            <a-button size="small" type="primary" @click="processZoomOut">
+            <a-button size="small" type="primary" @click="importModal">
               <a-icon type="history" />回退
             </a-button>
-            <a-button ghost size="small" type="primary" @click="processZoomOut">
+            <a-button ghost size="small" type="primary" @click="importModal">
               <a-icon type="delete" />清空<a-icon type="right" />
             </a-button>
           </a-button-group>
@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import 'highlight.js/styles/gradient-light.css'
+// import 'highlight.js/styles/gradient-light.css'
 // import 'highlight.js/styles/dracula.css'
-// import 'highlight.js/styles/an-old-hope.css'
-
+import 'highlight.js/styles/an-old-hope.css'
+import { message } from 'ant-design-vue'
 export default {
   name: 'Toolbar',
   components: {
@@ -103,7 +103,9 @@ export default {
     handleCancel() {
       this.visible = false
     },
-
+    importModal() {
+      message.warning('敬请期待')
+    },
     /* 放大视图*/
     processZoomIn() {
       this.defaultZoom = Math.floor(this.defaultZoom * 10 + 1) / 10
