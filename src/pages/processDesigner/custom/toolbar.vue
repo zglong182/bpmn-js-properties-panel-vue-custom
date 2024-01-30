@@ -64,7 +64,7 @@
       centered
       width="80%"
     >
-      <pre v-highlightjs="this.showXml"><code class="xml" /></pre>
+      <pre v-highlightjs="this.showXml"><code class="application/javascript" /></pre>
       <template slot="footer">
         <a-button key="back" @click="handleCancel">关闭</a-button>
       </template>
@@ -76,7 +76,7 @@
 <script>
 // import 'highlight.js/styles/gradient-light.css'
 // import 'highlight.js/styles/dracula.css'
-import 'highlight.js/styles/an-old-hope.css'
+import 'highlight.js/styles/monokai-sublime.css'
 import { message } from 'ant-design-vue'
 export default {
   name: 'Toolbar',

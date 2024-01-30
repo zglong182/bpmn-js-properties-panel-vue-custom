@@ -25,11 +25,11 @@ export default {
         this.viewer.get('moddle').ids.clear()
         document.querySelector('#canvas').innerHTML = ''
       }
+      debugger
       const canvas = this.$refs.canvas
       this.viewer = new Viewer({
         container: canvas
       })
-      console.log(this.designer)
       try {
         this.viewer.importXML('<?xml version="1.0" encoding="UTF-8"?>\n' +
                         '<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0qmy09o" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">\n' +
